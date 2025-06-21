@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spai.dao.ArticleMapper">
+
+    <select id="getarticleNum" resultType="java.lang.Integer">
+        select count(*) from article where authorid=#{id};
+    </select>
+    <select id="getarticles" resultType="Article">
+        select * from article where authorid=#{id};
+    </select>
+    <select id="getauthorid" resultType="java.lang.Integer">
+        select authorid from article where id=#{id};
+    </select>
+    <select id="selectBystr" resultType="Article">
+        select * from article where title like concat('%',#{str},'%') or content like concat('%',#{str},'%');
+    </select>
+    <insert id="addarticle" useGeneratedKeys="true" keyProperty="id">
+        insert into article values (#{id},#{title},#{content},#{authorid});
+    </insert>
+    <update id="updatearticle">
+        update article set title=#{title},content=#{content},authorid=#{authorid} where id=#{id};
+    </update>
+    <delete id="deleteartcile">
+        delete from article where id=#{id};
+    </delete>
+
+    <select id="selectArticleByid" resultType="Article">
+        select * from article where id=#{id}
+    </select>
+
+    <select id="selectMaxid" resultType="int">
+        select max(id) from article
+    </select>
+
+    <select id="getallArticles" resultType="com.spai.pojo.Article">
+        select * from article
+    </select>
+</mapper>

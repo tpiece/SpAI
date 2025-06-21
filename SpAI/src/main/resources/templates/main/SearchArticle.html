@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>查看文章信息</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a class="icon-bar" href="#">博客管理系统</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a th:text="主页">主页</a>
+                </li>
+                <li><a href="#">安全退出</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2" id="menulist">
+            <a th:href="@{/Blogs/home}" class="list-group-item" onclick="loadPage('page1')">
+                <!-- 小图标样式设置 -->
+                首页</a>
+            <a th:href="@{/Blogs/ShowUser}" class="list-group-item " onclick="loadPage('page2')">
+                用户管理 </a>
+            <a th:href="@{/article/ShowAllArticle}" class="list-group-item active" onclick="loadPage('page3')">
+                文章管理</a>
+            <a th:href="@{/chat}" class="list-group-item" onclick="loadPage('page3')" target="_blank">
+                AI助手</a>
+        </div>
+        <!--左边菜单栏-->
+
+        <div class="col-sm-10" id="right">
+            <form class="bs-example bs-example-form" role="form">
+                <div class="input-group">
+                    <span class="input-group-addon">用户名</span>
+                    <input type="text" class="form-control" placeholder="twitterhandle"
+                           th:value="${user.getUsername()}">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">密码</span>
+                    <input type="password" class="form-control" placeholder="" th:value="${user.getPassword()}">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">邮箱</span>
+                    <input type="email" class="form-control" placeholder="" th:value="${user.getEmail()}">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">生日</span>
+                    <input type="date" class="form-control" placeholder=""
+                           th:value="${#dates.format(user.getBirth(), 'yyyy-MM-dd')}">
+                </div>
+                <br>
+            </form>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    搜索
+                </div>
+                <div class="panel-body">
+                    <form role="form" class="form-inline" method="get"
+                          th:action="@{/article/selectarticle/{authorid}(authorid=${user.getId()})}">
+                        <div class="form-group">
+                            <label for="str">搜索</label>
+                            <input type="text" class="form-control" id="str" name="str" placeholder="请输入内容">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-default">开始搜索</button>
+                            <a href="" class="btn btn-default" id="btn-add" data-toggle="modal" data-target="#addModal">添加文章</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped ">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>文章标题</th>
+                        <th>文章内容</th>
+                        <th>操作</th>
+                        <th>查看</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="article:${articles}">
+                        <td th:text="${article.getId()}"></td>
+                        <td th:text="${article.getTitle()}"></td>
+                        <td th:text="${article.getContent()}"></td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="#" onclick="doEdit(this)" class="btn btn-default" id="btn-update"
+                                   data-toggle="modal" data-target="#updateModal">修改</a><a
+                                    th:href="@{/article/deletearticle/{id}(id=${article.getId()})}"
+                                    class="btn btn-danger">删除</a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a th:href="@{/article/Checkarticle/{id}(id=${article.getId()})}" class="btn btn-default" id="btn-check">查看</a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">添加文章信息</h4>
+            </div>
+            <form class="form-horizontal" role="form" method="post" th:action="@{/article/addarticle}">
+                <div class="form-group">
+                    <div class="col-sm-10">
+                        标题
+                        <input type="text" class="form-control" name="title" placeholder="请输入标题">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-10">
+                        内容
+                        <input type="text" class="form-control" name="content" placeholder="请输入内容">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-10">
+                        <input type="hidden" class="form-control" name="authorid" th:value="${user.getId()}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default">添加</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">修改文章信息</h4>
+            </div>
+            <form class="form-horizontal" role="form" method="post" th:action="@{/article/updatearticle}">
+                <input type="hidden" id="update-id" name="id">
+                <div class="form-group">
+                    <label for="update-title" class="col-sm-2 control-label">标题</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="title" placeholder="请输入标题" id="update-title">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="update-content" class="col-sm-2 control-label">内容</label>
+                    <div class="col-sm-10">
+                        <textarea name="content" class="form-control" id="update-content" cols="30" rows="10" placeholder="请输入内容"></textarea>
+                    </div>
+                </div>
+                <input type="hidden" id="update-authorid" name="authorid" th:value="${user.getId()}">
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default">修改</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+</body>
+<script>
+    function doEdit(obj) {
+        var tds = obj.parentNode.parentNode.parentNode.childNodes;//当前对象的父节点的父节点的子节点数组
+        $('#update-id').val(tds[1].innerText);
+        $('#update-title').val(tds[3].innerText);
+        $('#update-content').val(tds[5].innerText);
+    }
+</script>
+</html>

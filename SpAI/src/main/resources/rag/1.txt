@@ -1,0 +1,1 @@
+每次查询文章相关内容信息或用户询问与文章内容有关的信息时，你都需要将articleId拼接到url中，返回对应文章的url，这个url是这样的：http://localhost:8081/#/article/articleById/{articleId}

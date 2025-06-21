@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>博客内容</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a class="icon-bar" href="#">博客管理系统</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a text="主页"></a>
+                </li>
+                <li><a href="#">安全退出</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2" id="menulist">
+            <a th:href="@{/Blogs/home}" class="list-group-item" onclick="loadPage('page1')">
+                <!-- 小图标样式设置 -->
+                首页</a>
+            <a th:href="@{/Blogs/ShowUser}" class="list-group-item " onclick="loadPage('page2')">
+                用户管理 </a>
+            <a th:href="@{/article/ShowAllArticle}" class="list-group-item active" onclick="loadPage('page3')">
+                文章管理</a>
+            <a th:href="@{/chat}" class="list-group-item" onclick="loadPage('page3')" target="_blank">
+                AI助手</a>
+        </div>
+        <!--左边菜单栏-->
+
+        <div class="col-sm-10" id="right">
+            <form class="bs-example bs-example-form" role="form">
+                <div class="input-group">
+                    <span class="input-group-addon">用户名</span>
+                    <input type="text" class="form-control" placeholder="" th:value="${user.getUsername()}"
+                           readonly="readonly">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">密码</span>
+                    <input type="password" class="form-control" placeholder="" th:value="${user.getPassword()}"
+                           readonly="readonly">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">邮箱</span>
+                    <input type="email" class="form-control" placeholder="" th:value="${user.getEmail()}"
+                           readonly="readonly">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon">生日</span>
+                    <input type="date" class="form-control" placeholder=""
+                           th:value="${#dates.format(user.getBirth(), 'yyyy-MM-dd')}" readonly="readonly">
+                </div>
+                <br>
+            </form>
+            <!--            <div class="border">-->
+            <!--                <h1 class="" th:text="${article.getTitle()}"></h1>-->
+            <!--                <p th:text="${article.getContent()}"></p>-->
+            <!--            </div>-->
+            <div class="panel panel-default">
+                <div class="panel-heading h1" th:text="${article.getTitle()}">Panel heading without title</div>
+                <div class="panel-body" th:text="${article.getContent()}">
+                    Panel content
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+</body>
+<script>
+    function doEdit(obj) {
+        var tds = obj.parentNode.parentNode.parentNode.childNodes;//当前对象的父节点的父节点的子节点数组
+        $('#update-id').val(tds[1].innerText);
+        $('#update-title').val(tds[3].innerText);
+        $('#update-content').val(tds[5].innerText);
+    }
+</script>
+</html>
